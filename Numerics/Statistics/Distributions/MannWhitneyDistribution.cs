@@ -25,9 +25,10 @@ namespace Meta.Numerics.Statistics.Distributions {
             this.counts = GaussianBinomialCoefficients(m + n, n);
 
             total = 0.0;
-            for (int i = 0; i < n * m; i++) {
+            for (int i = 0; i < counts.Length; i++) {
                 total += (double) counts[i];
             }
+            // Fix this to only sum over half, or compute directly.
 
         }
 
@@ -85,66 +86,66 @@ namespace Meta.Numerics.Statistics.Distributions {
             }
 
             // we're done
-            return (c);
+            return c;
 
         }
 
         /// <inheritdoc />
         public override DiscreteInterval Support {
 	        get {
-                return(new DiscreteInterval(0, m * n));
+                return new DiscreteInterval(0, m * n);
             }
         }
 
         /// <inheritdoc />
         public override double ProbabilityMass(int k) {
             if ((k < 0) || (k > m * n)) {
-                return(0.0);
+                return 0.0;
             } else {
-                return(((double) counts[k]) / total);
+                return ((double) counts[k]) / total;
             }
         }
 
         /// <inheritdoc />
         public override double Mean {
             get {
-                return (m * n / 2.0);
+                return m * n / 2.0;
             }
         }
 
         /// <inheritdoc />
         public override double Variance {
             get {
-                return (m * n * (m + n + 1) / 12.0);
+                return m * n * (m + n + 1) / 12.0;
             }
         }
 
         /// <inheritdoc />
         public override double Skewness {
             get {
-                return (0.0);
+                return 0.0;
             }
         }
 
         /// <inheritdoc />
         public override double ExcessKurtosis {
             get {
-                return (12.0 / 5.0 * (m + m * m + m * n + n * n + n) / (m * n * (m + n + 1)));
+                return 12.0 / 5.0 * (m + m * m + m * n + n * n + n) / (m * n * (m + n + 1));
             }
         }
 
         /// <inheritdoc />
         public override double LeftExclusiveProbability (int k) {
             if (k < 0) {
-                return (0.0);
+                return 0.0;
             } else if (k >= m * n) {
-                return (1.0);
+                return 1.0;
             } else {
                 double P = 0;
                 for (int i = 0; i < k; i++) {
                     P += (double) counts[i];
                 }
-                return (P / total);
+                return P / total;
             }
 
         }
@@ -152,15 +153,15 @@ namespace Meta.Numerics.Statistics.Distributions {
        /// <inheritdoc />
        public override double RightExclusiveProbability (int k) {
            if (k < 0) {
-               return (1.0);
+               return 1.0;
            } else if (k >= counts.Length) {
-               return (0.0);
+               return 0.0;
            } else {
                double P = 0;
                for (int i = k+1; i < counts.Length; i++) {
                    P += (double) counts[i];
                }
-               return (P / total);
+               return P / total;
            }
 
        }
@@ -170,11 +171,11 @@ namespace Meta.Numerics.Statistics.Distributions {
            if (r < 0) {
                throw new ArgumentOutOfRangeException(nameof(r));
            } else if (r == 0) {
-               return (1.0);
+               return 1.0;
            } else if (r % 2 != 0) {
-               return (0.0);
+               return 0.0;
            } else {
-               return (base.CentralMoment(r));
+               return base.CentralMoment(r);
            }
        }
 

@@ -9,6 +9,7 @@ using Meta.Numerics.Matrices;
 using Meta.Numerics.Statistics;
 using Meta.Numerics.Statistics.Distributions;
 using Meta.Numerics.Functions;
+using TestResult = Meta.Numerics.Statistics.TestResult;
 
 namespace Test {
 
@@ -387,7 +388,29 @@ namespace Test {
             IntegrationResult result = FunctionMath.Integrate(integrand, 0.0, 1.0);
             Assert.IsTrue(result.Estimate.Value == 0.0);
 
-        } 
+        }
+
+        [TestMethod]
+        public void Bug66 () {
+
+            // MannWhitney test with sets of size 3 and 2 produced TestResult.Probability = 10/9.
+            // Problem was MannWhitneyDistribution.total didn't inclue the last bin.
+
+            double[] a = { 0.9095, 0.2199, 0.8331 };
+            double[] b = { 0.0, 0.9763 };
+            TestResult tr = Univariate.MannWhitneyTest(a, b);
+            Assert.IsTrue(tr.Probability <= 1.0);
+
+            DiscreteDistribution dist = tr.UnderlyingStatistic.Distribution;
+            DiscreteInterval support = dist.Support;
+
+            double P = 0.0;
+            for (int k = support.LeftEndpoint; k <= support.RightEndpoint; k++) {
+                P += dist.ProbabilityMass(k);
+            }
+            Assert.IsTrue(P == 1.0);
+
+        }
     }
 
 }

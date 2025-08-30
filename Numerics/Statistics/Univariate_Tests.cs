@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 using Meta.Numerics.Functions;
 using Meta.Numerics.Statistics.Distributions;
+using Meta.Numerics.Extended;
 
 namespace Meta.Numerics.Statistics {
     public static partial class Univariate {
@@ -596,7 +597,7 @@ namespace Meta.Numerics.Statistics {
             // Therefore, to generate the exact distribution, the total number of possible orderings must be less than the capacity of a decimal. 
             double lnTotal = AdvancedIntegerMath.LogFactorial(a.Count + b.Count)
                 - AdvancedIntegerMath.LogFactorial(a.Count) - AdvancedIntegerMath.LogFactorial(b.Count);
-            if (lnTotal > Math.Log((double) Decimal.MaxValue)) {
+            if (lnTotal > Math.Log((double) Int128.MaxValue)) {
                 double mu = a.Count * b.Count / 2.0;
                 double sigma = Math.Sqrt(mu * (a.Count + b.Count + 1) / 6.0);
                 ContinuousDistribution uDistribution = new NormalDistribution(mu, sigma);
